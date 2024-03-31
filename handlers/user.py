@@ -24,14 +24,19 @@ async def start(message: types.Message, state: FSMContext):
     await state.clear()
 
 
-@user_router.callback_query(F.data == 'start_menu')
-async def start_menu(call: types.CallbackQuery, state: FSMContext):
+@user_router.message(F.text == '/narushenie')
+async def violation_command(message: types.Message, state: FSMContext):
     await state.clear()
     claim_types = database.ClaimTypes.get_all()
     btn = await buttons.types(claim_types)
     text = MSGS['choose_violation']
-    await call.message.answer(text, reply_markup=btn)
+    await message.answer(text, reply_markup=btn)
     await state.set_state(Violation.s1)
+
+
+@user_router.callback_query(F.data == 'start_menu')
+async def start_menu(call: types.CallbackQuery, state: FSMContext):
+    await violation_command(call.message, state)
 
 
 @user_router.message(Violation.s1)
