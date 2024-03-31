@@ -19,6 +19,7 @@ class ExcelFile:
         ws['E1'] = 'Контакт'
         ws['F1'] = 'Дополнительный контакт'
         ws['G1'] = 'Файлы'
+        ws['H1'] = 'ID пользователя'
         ws.column_dimensions['A'].width = 20
         ws.column_dimensions['B'].width = 100
         ws.column_dimensions['C'].width = 10
@@ -26,10 +27,11 @@ class ExcelFile:
         ws.column_dimensions['E'].width = 20
         ws.column_dimensions['F'].width = 20
         ws.column_dimensions['G'].width = 20
+        ws.column_dimensions['H'].width = 20
         wb.save(filename=EXCEL_PATH)
 
     @classmethod
-    def paste_in_excel(cls, data):
+    def paste_in_excel(cls, data, chat_id):
         cls.create_excel()
         wb = Workbook()
         wb = load_workbook(filename=EXCEL_PATH)
@@ -42,4 +44,5 @@ class ExcelFile:
         ws['E'+idx] = data.get('phone', '-')
         ws['F'+idx] = data.get('contact', '-')
         ws['G'+idx] = str(len(data['files_list']))
+        ws['H'+idx] = str(chat_id)
         wb.save(filename=EXCEL_PATH)

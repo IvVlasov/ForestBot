@@ -16,7 +16,8 @@ TOKEN = config['bot']['token']
 DB_PATH = config['bot']['db_path']
 CLAIM_LENGTH = int(config['bot']['lenght'])
 SKIP = 'Пропустить'
-ADMIN_ID = config['bot']['adminId']
+ADMIN_IDS = config['bot']['adminId'].split(',')
+CHANNEL_ID = config['bot']['channelId']
 
 # Настройки Яндекса и Excel
 EXCEL_PATH = config['yandex']['excel_path']

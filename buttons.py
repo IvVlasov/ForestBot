@@ -36,7 +36,7 @@ async def confirm_claim_btn():
 
 
 async def admin_btns():
-    kb = [[InlineKeyboardButton(text='Выгрузить Excel', callback_data='confirm_claim')],
+    kb = [[InlineKeyboardButton(text='Выгрузить Excel', callback_data='load_excel')],
           [InlineKeyboardButton(text='Изменить нарушения', callback_data='change_violations')],
           [InlineKeyboardButton(text='Найти заявку', callback_data='search_claim')],
           [InlineKeyboardButton(text='Отправить сообщение', callback_data='send_message')],

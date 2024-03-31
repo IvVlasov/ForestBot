@@ -120,7 +120,6 @@ async def media_files(messages:  List[types.Message], state: FSMContext):
     files = []
     for message in messages:
         if message.photo:
-            print(message.photo)
             files.append({'file_type': 'photo', 'file_id': message.photo[-1].file_id})
         if message.document:
             files.append({'file_type': 'document', 'file_id': message.document.file_id})
@@ -156,7 +155,7 @@ async def confirm_claim(call: types.CallbackQuery, state: FSMContext):
     # Отправляем заявку админу
     await admin.send_claim_to_admin(data, call.message.chat.id)
     # Вставляем в excel заявку
-    excel.ExcelFile.paste_in_excel(data)
+    excel.ExcelFile.paste_in_excel(data, call.message.chat.id)
     # Обновляем Excel на Яндекс диске
     YandexDisk.upload_excel()
 
@@ -168,6 +167,7 @@ async def confirm_claim(call: types.CallbackQuery, state: FSMContext):
         path_list = await files.download_files(data['files_list'], data['record_id'])
         # Отправляем файлы в яндекс
         YandexDisk.upload_files(data['record_id'], path_list)
+        # await files.delete_files(path_list, data['record_id'])
 
     if SMTP_ENABLE:
         # Отправляем заявку на почту

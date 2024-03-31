@@ -1,7 +1,8 @@
 from aiogram import types, Router, F
 from aiogram.filters import Filter
 from aiogram.fsm.context import FSMContext
-from settings import ADMIN_ID, MSGS, EXCEL_PATH
+from aiogram.types.input_file import FSInputFile
+from settings import ADMIN_IDS, MSGS, EXCEL_PATH
 import buttons
 from services import database, admin, excel, yandex
 from handlers.states import Admin
@@ -11,9 +12,9 @@ import os
 class AdminFilter(Filter):
     async def __call__(self, msg) -> bool:
         if isinstance(msg, types.Message):
-            return msg.chat.id == int(ADMIN_ID)
+            return str(msg.chat.id) in ADMIN_IDS
         if isinstance(msg, types.CallbackQuery):
-            return msg.message.chat.id == int(ADMIN_ID)
+            return str(msg.message.chat.id) in ADMIN_IDS
 
 
 admin_router = Router()
@@ -25,6 +26,12 @@ async def admin_start(message: types.Message, state: FSMContext):
     txt = 'Выберите действие'
     btn = await buttons.admin_btns()
     await message.answer(txt, reply_markup=btn)
+
+
+@admin_router.callback_query(AdminFilter(), F.data == 'load_excel')
+async def download_excel(call: types.CallbackQuery, state: FSMContext):
+    doc = FSInputFile(EXCEL_PATH)
+    await call.message.answer_document(document=doc)
 
 
 @admin_router.callback_query(AdminFilter(), F.data == 'change_violations')
@@ -69,7 +76,7 @@ async def search_claim(call: types.CallbackQuery, state: FSMContext):
 
 @admin_router.message(AdminFilter(), Admin.search_claim)
 async def search_claim_number(message: types.Message, state: FSMContext):
-    value = message.text
+    value = message.text.replace('#', '')
     row = database.Claim.get_full_claim(value)
     if not row:
         await message.answer('Не удалось найти заявку')

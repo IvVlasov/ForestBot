@@ -16,3 +16,9 @@ async def download_files(files_list, record_id):
         await bot.download_file(file.file_path, destination=file_path)
         path_list.append(file_path)
     return path_list
+
+
+async def delete_files(path_list, record_id):
+    os.rmdir(f'media/files/{record_id}')
+    for path in path_list:
+        os.remove(path)

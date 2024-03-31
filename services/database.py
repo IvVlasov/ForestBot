@@ -3,13 +3,6 @@ from settings import DB_PATH, CLAIM_LENGTH
 import random
 
 
-DEFAULT_CLAIM_DATA = [
-    'Незаконная рубка, повреждение лесных насаждений',
-    'Размещение твердых коммунальных отхоов, отходов производства и потребления',
-    'Загрязнение лесов сточными водами, химическими радиоактивными и другими вредными веществами',
-]
-
-
 connection = sqlite3.connect(DB_PATH)
 cursor = connection.cursor()
 
@@ -61,7 +54,6 @@ class Claim:
     def create(cls, chat_id, data: dict):
         sql = '''insert into claims (record_id, user_id, type, place, descr, contact) values (?, ?, ?, ?, ?, ?)'''
         record_id = cls._new_record_id()
-        print(record_id)
         cursor.execute(
             sql,
             (record_id, chat_id, data['type'], data['place'], data['descr'], data.get('contact', '-'))
@@ -79,7 +71,6 @@ class Claim:
     @classmethod
     def _new_record_id(cls):
         n = ''
-        print(CLAIM_LENGTH)
         for _ in range(CLAIM_LENGTH):
             n += str(random.randint(1, 9))
         exist = cls.get(n)
@@ -115,9 +106,8 @@ class Files:
 class ClaimTypes:
 
     def init_data():
-        sql = '''insert or  ignore into claim_types (text) values (?)'''
-        for el in DEFAULT_CLAIM_DATA:
-            cursor.execute(sql, (el, ))
+        sql = '''insert or  ignore into claim_types (id, text) values (300, ?)'''
+        cursor.execute(sql, ('Другое', ))
         connection.commit()
 
     @classmethod
@@ -171,4 +161,3 @@ class User:
         cursor.execute(query, (chat_id, ))
         user = cursor.fetchone()
         return user
- 
