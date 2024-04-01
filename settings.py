@@ -5,13 +5,13 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 
 # Загружаем текста сообщений и кнопок
-json_file = json.load(open('config/messages.json'))
+json_file = json.load(open('config/messages.json', encoding='utf-8'))
 MSGS = json_file['messages']
 BTNS = json_file['buttons']
 
 # Загружаем и парсим основной конфиг
 config = configparser.ConfigParser()
-config.read('config/config.ini')
+config.read('config/config.ini', encoding='utf-8')
 TOKEN = config['bot']['token']
 DB_PATH = config['bot']['db_path']
 CLAIM_LENGTH = int(config['bot']['lenght'])
